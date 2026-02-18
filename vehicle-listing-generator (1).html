@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ListIt Pro — Vehicle Listing Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161a24;
+    --surface2: #1e2330;
+    --border: #2a3045;
+    --accent: #e8a020;
+    --accent2: #f0c050;
+    --text: #e8ecf4;
+    --muted: #7a849a;
+    --green: #2ecc71;
+    --red: #e74c3c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, #0d0f14 0%, #161a24 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+  .logo span { color: var(--text); }
+  .tagline { font-size: 0.8rem; color: var(--muted); margin-top: -2px; }
+  .main { display: grid; grid-template-columns: 420px 1fr; gap: 0; min-height: calc(100vh - 64px); }
+  .panel {
+    padding: 28px 24px;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    max-height: calc(100vh - 64px);
+  }
+  .output-panel { padding: 28px 24px; overflow-y: auto; max-height: calc(100vh - 64px); }
+  .section-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  select, input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    appearance: none;
+    transition: border-color 0.2s;
+  }
+  select:focus, input:focus { outline: none; border-color: var(--accent); }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237a849a' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-primary:disabled { background: #444; color: #888; cursor: not-allowed; transform: none; }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: auto;
+    padding: 8px 16px;
+    font-size: 0.82rem;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-copy {
+    background: var(--green);
+    color: #fff;
+    width: auto;
+    padding: 10px 20px;
+  }
+  .btn-copy:hover { background: #27ae60; }
+  .features-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 4px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .feature-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 7px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    background: rgba(232,160,32,0.12);
+    border: 1px solid rgba(232,160,32,0.35);
+    user-select: none;
+  }
+  .feature-item span {
+    font-size: 0.88rem;
+    color: var(--accent);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .feature-item.inactive {
+    background: rgba(255,255,255,0.02);
+    border-color: rgba(255,255,255,0.06);
+    opacity: 0.38;
+  }
+  .feature-item.inactive span { color: var(--muted); }
+  .feature-item:hover { filter: brightness(1.2); }
+  .output-textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    padding: 18px;
+    resize: vertical;
+    min-height: 480px;
+    transition: border-color 0.2s;
+  }
+  .output-textarea:focus { outline: none; border-color: var(--accent); }
+  .template-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .template-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .template-btn:hover, .template-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,160,32,0.08); }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .status.loading { background: rgba(232,160,32,0.15); color: var(--accent); }
+  .status.done { background: rgba(46,204,113,0.15); color: var(--green); }
+  .status.error { background: rgba(231,76,60,0.15); color: var(--red); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot.pulse { background: var(--accent); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  .dot.green { background: var(--green); }
+  .dot.red { background: var(--red); }
+  .action-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .info-pill {
+    background: rgba(232,160,32,0.1);
+    border: 1px solid rgba(232,160,32,0.3);
+    color: var(--accent);
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    display: inline-block;
+  }
+  .custom-section { margin-top: 14px; }
+  .custom-section textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 80px;
+  }
+  .custom-section textarea:focus { outline: none; border-color: var(--accent); }
+  .char-hint { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">List<span>It</span> Pro</div>
+    <div class="tagline">Marketplace Listing Generator for Dealers</div>
+  </div>
+</header>
+
+<div class="main">
+  <!-- LEFT PANEL -->
+  <div class="panel">
+
+    <!-- VEHICLE SELECTOR -->
+    <div class="section-title">🚗 Vehicle</div>
+    <div class="field">
+      <label>Year</label>
+      <select id="yearSelect"><option value="">Select Year</option></select>
+    </div>
+    <div class="field">
+      <label>Make</label>
+      <select id="makeSelect"><option value="">Select Make</option></select>
+    </div>
+    <div class="field">
+      <label>Model</label>
+      <select id="modelSelect" disabled><option value="">Select Model</option></select>
+    </div>
+    <div class="field">
+      <label>Trim</label>
+      <select id="trimSelect" disabled><option value="">Select Trim</option></select>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- MANUAL FIELDS -->
+    <div class="section-title">📋 Details</div>
+    <div class="grid2">
+      <div class="field">
+        <label>Miles</label>
+        <input type="text" id="milesInput" placeholder="e.g. 68,450">
+      </div>
+      <div class="field">
+        <label>Color</label>
+        <input type="text" id="colorInput" placeholder="e.g. Midnight Blue">
+      </div>
+    </div>
+    <div class="field">
+      <label>Price ($)</label>
+      <input type="text" id="priceInput" placeholder="e.g. 18,995">
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- DEALER INFO -->
+    <div class="section-title">🏢 Dealer Info</div>
+    <div class="field">
+      <label>Dealer Name</label>
+      <input type="text" id="dealerName" placeholder="e.g. Metro Auto Sales">
+    </div>
+    <div class="field">
+      <label>Address</label>
+      <input type="text" id="dealerAddress" placeholder="e.g. 9999 Highway 888 NW, City, ST 99999">
+    </div>
+    <div class="field">
+      <label>Hours</label>
+      <input type="text" id="dealerHours" placeholder="e.g. Mon–Sat 10am–6pm">
+    </div>
+    <div class="field">
+      <label>Website</label>
+      <input type="text" id="dealerWebsite" placeholder="e.g. YourDealership.com">
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FETCH FEATURES -->
+    <div class="section-title">✨ Key Features</div>
+    <button class="btn btn-primary" id="fetchBtn" disabled onclick="fetchFeatures()">
+      🔍 Fetch Vehicle Features
+    </button>
+
+    <div id="featuresContainer" style="display:none; margin-top:14px;">
+      <div id="statusMsg"></div>
+      <div class="features-box" id="featuresList"></div>
+      <div class="custom-section">
+        <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Add Custom Feature</label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="customFeatureInput" placeholder="e.g. Tow Package 🚛" style="flex:1;">
+          <button class="btn btn-ghost" onclick="addCustomFeature()">Add</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="output-panel">
+
+    <div class="section-title">📝 Listing Template</div>
+    <div class="info-pill">Choose a style or customize below</div>
+    <div class="template-grid" id="templateGrid"></div>
+
+    <div class="section-title">📄 Generated Listing</div>
+    <textarea class="output-textarea" id="outputText" placeholder="Select a vehicle, fill in details, fetch features, then click Generate..."></textarea>
+
+    <div class="action-row">
+      <button class="btn btn-primary" style="flex:1;" onclick="generateListing()">⚡ Generate Listing</button>
+      <button class="btn btn-copy" onclick="copyListing()">📋 Copy</button>
+      <button class="btn btn-ghost" onclick="clearAll()">🗑 Clear</button>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-title">🎨 Custom Template Editor</div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:10px;">Use placeholders: <code style="color:var(--accent);">{{year}} {{make}} {{model}} {{trim}} {{miles}} {{color}} {{price}} {{engine}} {{drivetrain}} {{transmission}} {{features}} {{address}} {{hours}} {{website}}</code></p>
+    <textarea class="custom-section" id="customTemplate" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:14px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;line-height:1.6;resize:vertical;min-height:200px;" placeholder="Write your own template here using the placeholders above..."></textarea>
+    <div class="action-row" style="margin-top:10px;">
+      <button class="btn btn-ghost" onclick="saveCustomTemplate()">💾 Save as Preset 10</button>
+      <button class="btn btn-ghost" onclick="useCustomTemplate()">✅ Use This Template</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const MAKES_MODELS = {
+  "Acura": ["ILX","MDX","RDX","RLX","TL","TLX","TSX","ZDX"],
+  "Audi": ["A3","A4","A5","A6","A7","A8","Q3","Q5","Q7","Q8","RS3","RS5","RS7","S4","S5","TT"],
+  "BMW": ["2 Series","3 Series","4 Series","5 Series","6 Series","7 Series","8 Series","M3","M4","M5","X1","X2","X3","X4","X5","X6","X7","Z4"],
+  "Buick": ["Enclave","Encore","Encore GX","Envision","LaCrosse","Regal","Verano"],
+  "Cadillac": ["CT4","CT5","CT6","Escalade","SRX","XT4","XT5","XT6"],
+  "Chevrolet": ["Blazer","Camaro","Colorado","Corvette","Equinox","Express","Impala","Malibu","Silverado 1500","Silverado 2500","Silverado 3500","Sonic","Spark","Suburban","Tahoe","Traverse","Trax"],
+  "Chrysler": ["200","300","Pacifica","Voyager"],
+  "Dodge": ["Challenger","Charger","Dakota","Durango","Grand Caravan","Journey","Ram 1500"],
+  "Ford": ["Bronco","Bronco Sport","EcoSport","Edge","Escape","Expedition","Explorer","F-150","F-250","F-350","Flex","Fusion","Maverick","Mustang","Ranger","Transit","Transit Connect"],
+  "GMC": ["Acadia","Canyon","Envoy","Sierra 1500","Sierra 2500","Sierra 3500","Terrain","Yukon","Yukon XL"],
+  "Honda": ["Accord","CR-V","CR-Z","Civic","Element","Fit","HR-V","Odyssey","Passport","Pilot","Ridgeline"],
+  "Hyundai": ["Accent","Elantra","Genesis","Ioniq","Kona","Palisade","Santa Cruz","Santa Fe","Sonata","Tucson","Venue","Veloster"],
+  "Infiniti": ["EX","FX","G","JX","M","Q50","Q60","Q70","QX30","QX50","QX55","QX60","QX80"],
+  "Jeep": ["Cherokee","Commander","Compass","Gladiator","Grand Cherokee","Grand Cherokee L","Liberty","Patriot","Renegade","Wrangler"],
+  "Kia": ["Cadenza","Carnival","Forte","K5","Niro","Optima","Rio","Sedona","Sorento","Soul","Sportage","Stinger","Telluride"],
+  "Land Rover": ["Defender","Discovery","Discovery Sport","Freelander","Range Rover","Range Rover Evoque","Range Rover Sport","Range Rover Velar"],
+  "Lexus": ["ES","GS","GX","IS","LC","LS","LX","NX","RX","UX"],
+  "Lincoln": ["Aviator","Continental","Corsair","MKC","MKS","MKT","MKX","MKZ","Nautilus","Navigator"],
+  "Mazda": ["CX-3","CX-30","CX-5","CX-50","CX-9","Mazda3","Mazda6","MX-5 Miata"],
+  "Mercedes-Benz": ["A-Class","C-Class","CLA","CLS","E-Class","G-Class","GLA","GLB","GLC","GLE","GLS","S-Class","SL","SLC","AMG GT"],
+  "Mitsubishi": ["Eclipse Cross","Galant","Lancer","Mirage","Outlander","Outlander Sport"],
+  "Nissan": ["Altima","Armada","Frontier","Kicks","Leaf","Maxima","Murano","NV","Pathfinder","Rogue","Rogue Sport","Sentra","Titan","Versa","Xterra"],
+  "Porsche": ["718 Boxster","718 Cayman","911","Cayenne","Macan","Panamera","Taycan"],
+  "Ram": ["1500","1500 Classic","2500","3500","ProMaster","ProMaster City"],
+  "Subaru": ["Ascent","BRZ","Crosstrek","Forester","Impreza","Legacy","Outback","WRX"],
+  "Tesla": ["Cybertruck","Model 3","Model S","Model X","Model Y"],
+  "Toyota": ["4Runner","Avalon","Camry","Corolla","GR86","Highlander","Land Cruiser","Matrix","Prius","RAV4","Sequoia","Sienna","Supra","Tacoma","Tundra","Venza","Yaris"],
+  "Volkswagen": ["Atlas","Beetle","Golf","GTI","ID.4","Jetta","Passat","Tiguan","Touareg"],
+  "Volvo": ["S60","S90","V60","V90","XC40","XC60","XC90"]
+};
+
+const TRIMS = {
+  "default": ["Base","S","SE","SEL","Premium","Limited","Sport","Luxury","Platinum","XL","XLT","Lariat","King Ranch","Platinum","High Country","LT","LTZ","LS","SL","SV","SR","SR5","TRD","EX","EX-L","Touring","Signature","Black","Titanium","ST","ST-Line"],
+};
+
+const TEMPLATES = [
+  { name: "Classic Pro", id: 1 },
+  { name: "Short & Bold", id: 2 },
+  { name: "Casual Friendly", id: 3 },
+  { name: "Emoji Heavy", id: 4 },
+  { name: "Luxury Feel", id: 5 },
+  { name: "Budget Focus", id: 6 },
+  { name: "Truck/SUV Style", id: 7 },
+  { name: "Minimal Clean", id: 8 },
+  { name: "Spanish Mix", id: 9 },
+  { name: "Custom (Edit Below)", id: 10 },
+];
+
+const TEMPLATE_CONTENT = {
+  1: "{{year}} {{make}} {{model}} {{trim}} \u2014 {{color}}\n\nYear: {{year}}\nMake: {{make}}\nModel: {{model}} {{trim}}\nMiles: {{miles}}\nColor: {{color}}\nEngine: {{engine}}\nDrivetrain: {{drivetrain}}\nTransmission: {{transmission}}\n\n\u2705 Key Features:\n{{features}}\n\n\uD83D\uDCB0 Priced to Sell @ ${{price}} Cash + Tax & Doc Fee\n\nWe also have financing available for all credit types!\n\nDon't hesitate to reach out \u2014 happy to answer any questions!\n\uD83D\uDCCD {{address}}\n\uD83D\uDD50 {{hours}}\n\uD83C\uDF10 {{website}}",
+
+  2: "\uD83D\uDE98 {{year}} {{make}} {{model}} {{trim}} | {{miles}} Miles | ${{price}}\n\n{{engine}} | {{drivetrain}} | {{color}}\n\nTOP FEATURES:\n{{features}}\n\nFinancing available for all credit types.\n\uD83D\uDCCD {{address}} | {{hours}} | {{website}}",
+
+  3: "Hey there! Check out this awesome {{year}} {{make}} {{model}} {{trim}}!\n\nShe's got {{miles}} miles, rocking that {{color}} exterior, and she drives smooth as butter. Here's what she's packing:\n\n{{features}}\n\nWe've got it priced right at ${{price}} + Tax & Doc. We also work with all types of credit, so don't let that hold you back!\n\nGive us a call or shoot us a message \u2014 we love answering questions!\n\uD83D\uDCCD {{address}}\n\u23F0 {{hours}}\n\uD83C\uDF10 {{website}}",
+
+  4: "\uD83D\uDD25\uD83D\uDD25 {{year}} {{make}} {{model}} {{trim}} \uD83D\uDD25\uD83D\uDD25\n\n\uD83D\uDCC5 Year: {{year}}\n\uD83C\uDFED Make: {{make}}\n\uD83D\uDE97 Model: {{model}} {{trim}}\n\uD83D\uDEE3\uFE0F Miles: {{miles}}\n\uD83C\uDFA8 Color: {{color}}\n\u2699\uFE0F Engine: {{engine}}\n\uD83D\uDD27 Drivetrain: {{drivetrain}}\n\uD83D\uDD04 Transmission: {{transmission}}\n\n\uD83D\uDC8E Features:\n{{features}}\n\n\uD83D\uDCB5 PRICE: ${{price}} Cash + Tax & Doc Fee\n\uD83D\uDCB3 Financing Available for ALL Credit Types!\n\n\uD83D\uDCCD {{address}}\n\uD83D\uDD50 {{hours}}\n\uD83C\uDF10 {{website}}",
+
+  5: "\u2014 {{year}} {{make}} {{model}} {{trim}} \u2014\nPresented by {{address}}\n\nA refined {{color}} {{year}} {{make}} {{model}} with just {{miles}} miles. Powered by a {{engine}} mated to a {{transmission}}, this vehicle exemplifies what {{make}} does best.\n\nDISTINGUISHED FEATURES:\n{{features}}\n\nInvestment: ${{price}} (financing available for qualified buyers)\n\nFor a private showing or inquiries:\n\uD83D\uDCCD {{address}}\n\uD83D\uDD50 {{hours}} | \uD83C\uDF10 {{website}}",
+
+  6: "\u2705 GREAT DEAL ALERT \u2014 {{year}} {{make}} {{model}} {{trim}}\n\nOnly {{miles}} Miles! | {{color}} | ${{price}}\n\nNo need to overpay! This {{engine}} {{drivetrain}} is priced to move.\n\nWhat you get:\n{{features}}\n\n\uD83D\uDCB2 ${{price}} Cash + Tax & Doc\n\uD83D\uDCB3 ALL credit types welcome \u2014 we work with your budget!\n\n\uD83D\uDCCD {{address}} | {{hours}}\n\uD83C\uDF10 {{website}}",
+
+  7: "\uD83D\uDE9B {{year}} {{make}} {{model}} {{trim}} \u2014 READY TO WORK & PLAY \uD83D\uDE9B\n\nSpecs:\n\u25AA Miles: {{miles}}\n\u25AA Color: {{color}}\n\u25AA Engine: {{engine}}\n\u25AA Drivetrain: {{drivetrain}}\n\u25AA Transmission: {{transmission}}\n\nThis beast is loaded:\n{{features}}\n\n\uD83D\uDCB0 Asking ${{price}} + Tax & Doc | Financing Available\n\n\uD83D\uDCCD {{address}}\n\u23F0 {{hours}} | \uD83C\uDF10 {{website}}",
+
+  8: "{{year}} {{make}} {{model}} {{trim}}\n{{miles}} mi \u00B7 {{color}} \u00B7 ${{price}}\n\n{{engine}} \u00B7 {{drivetrain}} \u00B7 {{transmission}}\n\nFeatures:\n{{features}}\n\nFinancing available \u00B7 Tax & doc extra\n{{address}} \u00B7 {{hours}} \u00B7 {{website}}",
+
+  9: "\uD83D\uDE97 {{year}} {{make}} {{model}} {{trim}} \u2014 {{miles}} Millas \u2014 {{color}}\n\n\u2699\uFE0F Motor: {{engine}} | Tracci\u00F3n: {{drivetrain}} | Transmisi\u00F3n: {{transmission}}\n\n\u2705 Caracter\u00EDsticas / Features:\n{{features}}\n\n\uD83D\uDCB0 Precio / Price: ${{price}} + Tax & Doc\n\uD83D\uDCB3 Financiamiento disponible para todos los cr\u00E9ditos / Financing available for all credit types!\n\n\uD83D\uDCCD {{address}}\n\uD83D\uDD50 {{hours}} | \uD83C\uDF10 {{website}}",
+
+  10: "",
+};
+
+let selectedFeatures = [];
+let currentTemplate = 1;
+let vehicleInfo = { engine: '', drivetrain: '', transmission: '' };
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  // Years
+  const yearSel = document.getElementById('yearSelect');
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear + 1; y >= 2010; y--) {
+    yearSel.innerHTML += `<option value="${y}">${y}</option>`;
+  }
+
+  // Makes — populate and enable immediately
+  const makeSel = document.getElementById('makeSelect');
+  makeSel.disabled = false;
+  Object.keys(MAKES_MODELS).sort().forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m;
+    opt.textContent = m;
+    makeSel.appendChild(opt);
+  });
+
+  // Template buttons
+  const tg = document.getElementById('templateGrid');
+  TEMPLATES.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'template-btn' + (t.id === 1 ? ' active' : '');
+    btn.textContent = t.name;
+    btn.onclick = () => selectTemplate(t.id, btn);
+    tg.appendChild(btn);
+  });
+
+  yearSel.addEventListener('change', updateFetchBtn);
+  makeSel.addEventListener('change', () => { populateModels(); updateFetchBtn(); });
+  document.getElementById('modelSelect').addEventListener('change', () => { populateTrims(); updateFetchBtn(); });
+  document.getElementById('trimSelect').addEventListener('change', updateFetchBtn);
+}
+
+function populateModels() {
+  const make = document.getElementById('makeSelect').value;
+  const modelSel = document.getElementById('modelSelect');
+  const trimSel = document.getElementById('trimSelect');
+
+  // Reset model
+  modelSel.innerHTML = '<option value="">Select Model</option>';
+  trimSel.innerHTML = '<option value="">Select Trim</option>';
+  trimSel.disabled = true;
+
+  if (make && MAKES_MODELS[make]) {
+    MAKES_MODELS[make].forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m;
+      opt.textContent = m;
+      modelSel.appendChild(opt);
+    });
+    modelSel.disabled = false;
+  } else {
+    modelSel.disabled = true;
+  }
+}
+
+function populateTrims() {
+  const make = document.getElementById('makeSelect').value;
+  const model = document.getElementById('modelSelect').value;
+  const trimSel = document.getElementById('trimSelect');
+  trimSel.innerHTML = '<option value="">Select Trim</option>';
+
+  if (model) {
+    const trims = TRIMS[make + '_' + model] || TRIMS['default'];
+    trims.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t;
+      opt.textContent = t;
+      trimSel.appendChild(opt);
+    });
+    trimSel.disabled = false;
+  } else {
+    trimSel.disabled = true;
+  }
+}
+
+function updateFetchBtn() {
+  const y = document.getElementById('yearSelect').value;
+  const ma = document.getElementById('makeSelect').value;
+  const mo = document.getElementById('modelSelect').value;
+  document.getElementById('fetchBtn').disabled = !(y && ma && mo);
+}
+
+function selectTemplate(id, btn) {
+  document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentTemplate = id;
+}
+
+// ============================================================
+// FETCH FEATURES via Claude API
+// ============================================================
+async function fetchFeatures() {
+  const year = document.getElementById('yearSelect').value;
+  const make = document.getElementById('makeSelect').value;
+  const model = document.getElementById('modelSelect').value;
+  const trim = document.getElementById('trimSelect').value || '';
+
+  if (!year || !make || !model) return;
+
+  document.getElementById('featuresContainer').style.display = 'block';
+  setStatus('loading', `Searching features for ${year} ${make} ${model} ${trim}...`);
+  document.getElementById('featuresList').innerHTML = '';
+  selectedFeatures = [];
+
+  const prompt = `You are an automotive database expert. For the ${year} ${make} ${model} ${trim ? trim + ' trim' : ''}, provide:
+
+1. ENGINE: (e.g. "3.5L V6")
+2. DRIVETRAIN: (e.g. "AWD" or "FWD" or "RWD" or "4WD")
+3. TRANSMISSION: (e.g. "8-Speed Automatic")
+4. KEY_FEATURES: A list of the notable standard and available features for this specific trim, each on its own line. Include things like: seating type/material, infotainment screen size, safety tech, driver assists, sunroof/moonroof, remote start, navigation, Bluetooth, camera systems, heated/ventilated seats, heated steering wheel, 3rd row seating if applicable, towing capacity if notable, etc. Add a relevant emoji at the end of each feature (like 🔥 for heated, ❄️ for cooling, 🎵 for audio, 📱 for connectivity, etc.)
+
+Format your response EXACTLY like this (no extra text):
+ENGINE: [value]
+DRIVETRAIN: [value]
+TRANSMISSION: [value]
+KEY_FEATURES:
+[feature 1 with emoji]
+[feature 2 with emoji]
+[feature 3 with emoji]
+...
+
+Include 10-18 features. Be specific to this exact vehicle trim.`;
+
+  try {
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.[0]?.text || '';
+    parseVehicleData(text);
+    setStatus('done', 'Features loaded! Check/uncheck what applies.');
+  } catch (e) {
+    setStatus('error', 'Error fetching features. Check connection.');
+  }
+}
+
+function parseVehicleData(text) {
+  const engineMatch = text.match(/ENGINE:\s*(.+)/i);
+  const driveMatch = text.match(/DRIVETRAIN:\s*(.+)/i);
+  const transMatch = text.match(/TRANSMISSION:\s*(.+)/i);
+  vehicleInfo.engine = engineMatch ? engineMatch[1].trim() : '';
+  vehicleInfo.drivetrain = driveMatch ? driveMatch[1].trim() : '';
+  vehicleInfo.transmission = transMatch ? transMatch[1].trim() : '';
+
+  const featSection = text.split(/KEY_FEATURES:/i)[1] || '';
+  const lines = featSection.split('\n').map(l => l.trim()).filter(l => l.length > 2);
+
+  selectedFeatures = [];
+  const list = document.getElementById('featuresList');
+  list.innerHTML = '';
+
+  // Always add "Runs & Drives Great" first
+  addFeatureItem('Runs & Drives Great 🚗💨✅', true, list);
+
+  lines.forEach(line => {
+    if (line && !line.startsWith('ENGINE') && !line.startsWith('DRIVETRAIN') && !line.startsWith('TRANSMISSION')) {
+      addFeatureItem(line, true, list);
+    }
+  });
+}
+
+function addFeatureItem(text, active, container) {
+  const div = document.createElement('div');
+  div.className = 'feature-item' + (active ? '' : ' inactive');
+
+  const span = document.createElement('span');
+  span.textContent = text;
+  div.appendChild(span);
+  container.appendChild(div);
+
+  if (active) selectedFeatures.push(text);
+
+  div.addEventListener('click', function() {
+    const isActive = !div.classList.contains('inactive');
+    if (isActive) {
+      div.classList.add('inactive');
+      selectedFeatures = selectedFeatures.filter(f => f !== text);
+    } else {
+      div.classList.remove('inactive');
+      if (!selectedFeatures.includes(text)) selectedFeatures.push(text);
+    }
+  });
+}
+
+function addCustomFeature() {
+  const inp = document.getElementById('customFeatureInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  const list = document.getElementById('featuresList');
+  if (list.children.length === 0) document.getElementById('featuresContainer').style.display = 'block';
+  addFeatureItem(val, true, list);
+  inp.value = '';
+}
+
+function setStatus(type, msg) {
+  const s = document.getElementById('statusMsg');
+  const dotClass = type === 'loading' ? 'pulse' : type === 'done' ? 'green' : 'red';
+  s.className = `status ${type}`;
+  s.innerHTML = `<div class="dot ${dotClass}"></div>${msg}`;
+}
+
+// ============================================================
+// GENERATE LISTING
+// ============================================================
+function generateListing() {
+  const year = document.getElementById('yearSelect').value || '____';
+  const make = document.getElementById('makeSelect').value || '____';
+  const model = document.getElementById('modelSelect').value || '____';
+  const trim = document.getElementById('trimSelect').value || '';
+  const miles = document.getElementById('milesInput').value || '____';
+  const color = document.getElementById('colorInput').value || '____';
+  const price = document.getElementById('priceInput').value || '____';
+  const address = document.getElementById('dealerAddress').value || 'Your Address Here';
+  const hours = document.getElementById('dealerHours').value || 'Mon–Sat 10am–6pm';
+  const website = document.getElementById('dealerWebsite').value || 'YourWebsite.com';
+
+  const featuresText = getCheckedFeatures().map(f => f).join('\n');
+
+  let template = currentTemplate === 10
+    ? document.getElementById('customTemplate').value
+    : TEMPLATE_CONTENT[currentTemplate];
+
+  const output = template
+    .replace(/{{year}}/g, year)
+    .replace(/{{make}}/g, make)
+    .replace(/{{model}}/g, model)
+    .replace(/{{trim}}/g, trim)
+    .replace(/{{miles}}/g, miles)
+    .replace(/{{color}}/g, color)
+    .replace(/{{price}}/g, price)
+    .replace(/{{engine}}/g, vehicleInfo.engine || '____')
+    .replace(/{{drivetrain}}/g, vehicleInfo.drivetrain || '____')
+    .replace(/{{transmission}}/g, vehicleInfo.transmission || '____')
+    .replace(/{{features}}/g, featuresText || '(No features selected)')
+    .replace(/{{address}}/g, address)
+    .replace(/{{hours}}/g, hours)
+    .replace(/{{website}}/g, website);
+
+  document.getElementById('outputText').value = output;
+}
+
+function getCheckedFeatures() {
+  const items = document.querySelectorAll('#featuresList .feature-item:not(.inactive)');
+  return Array.from(items).map(item => item.querySelector('span').textContent);
+}
+
+function copyListing() {
+  const ta = document.getElementById('outputText');
+  ta.select();
+  document.execCommand('copy');
+  const btn = document.querySelector('.btn-copy');
+  btn.textContent = '✅ Copied!';
+  setTimeout(() => btn.textContent = '📋 Copy', 2000);
+}
+
+function clearAll() {
+  document.getElementById('outputText').value = '';
+  document.getElementById('featuresList').innerHTML = '';
+  document.getElementById('featuresContainer').style.display = 'none';
+  selectedFeatures = [];
+  vehicleInfo = { engine: '', drivetrain: '', transmission: '' };
+}
+
+function saveCustomTemplate() {
+  TEMPLATE_CONTENT[10] = document.getElementById('customTemplate').value;
+  alert('Saved as Preset 10!');
+}
+
+function useCustomTemplate() {
+  const btns = document.querySelectorAll('.template-btn');
+  btns.forEach((b,i) => b.classList.toggle('active', i === 9));
+  currentTemplate = 10;
+}
+
+init();
+</script>
+</body>
+</html>
