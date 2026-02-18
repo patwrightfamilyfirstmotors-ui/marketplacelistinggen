@@ -4,63 +4,123 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ListIt Pro — Vehicle Listing Generator</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #161a24;
-    --surface2: #1e2330;
-    --border: #2a3045;
-    --accent: #e8a020;
-    --accent2: #f0c050;
-    --text: #e8ecf4;
-    --muted: #7a849a;
-    --green: #2ecc71;
-    --red: #e74c3c;
+    --bg: #08090c;
+    --surface: #0f1117;
+    --surface2: #161820;
+    --surface3: #1c1f2a;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.14);
+    --accent: #6c63ff;
+    --accent2: #9d97ff;
+    --accent-glow: rgba(108,99,255,0.25);
+    --amber: #f59e0b;
+    --amber-glow: rgba(245,158,11,0.2);
+    --text: #f0f2f8;
+    --text-secondary: #8891a8;
+    --green: #10d48e;
+    --red: #f04343;
+    --green-glow: rgba(16,212,142,0.2);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Manrope', sans-serif;
     min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 10% 0%, rgba(108,99,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(245,158,11,0.05) 0%, transparent 60%);
   }
+
+  /* ─── HEADER ─── */
   header {
-    background: linear-gradient(135deg, #0d0f14 0%, #161a24 100%);
-    border-bottom: 2px solid var(--accent);
-    padding: 18px 32px;
+    background: rgba(8,9,12,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    justify-content: space-between;
+    height: 60px;
     position: sticky;
     top: 0;
     z-index: 100;
   }
-  .logo {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 2rem;
-    color: var(--accent);
-    letter-spacing: 2px;
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo-mark {
+    width: 34px; height: 34px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: #fff;
+    letter-spacing: -0.5px;
+    box-shadow: 0 0 20px var(--accent-glow);
+    flex-shrink: 0;
   }
-  .logo span { color: var(--text); }
-  .tagline { font-size: 0.8rem; color: var(--muted); margin-top: -2px; }
-  .main { display: grid; grid-template-columns: 420px 1fr; gap: 0; min-height: calc(100vh - 64px); }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .logo span { color: var(--accent); }
+  .tagline {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+  }
+  .header-badge {
+    background: rgba(108,99,255,0.12);
+    border: 1px solid rgba(108,99,255,0.3);
+    color: var(--accent2);
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ─── LAYOUT ─── */
+  .main { display: grid; grid-template-columns: 400px 1fr; gap: 0; min-height: calc(100vh - 60px); }
+
   .panel {
-    padding: 28px 24px;
+    padding: 24px 20px;
     border-right: 1px solid var(--border);
     overflow-y: auto;
-    max-height: calc(100vh - 64px);
+    max-height: calc(100vh - 60px);
   }
-  .output-panel { padding: 28px 24px; overflow-y: auto; max-height: calc(100vh - 64px); }
+  .output-panel { padding: 24px 20px; overflow-y: auto; max-height: calc(100vh - 60px); }
+
+  /* ─── SECTION TITLE ─── */
   .section-title {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 1.1rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
     letter-spacing: 2px;
-    color: var(--accent);
-    margin-bottom: 14px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+  }
+  .section-title .sticon {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem;
   }
   .section-title::after {
     content: '';
@@ -68,250 +128,403 @@
     height: 1px;
     background: var(--border);
   }
-  .field { margin-bottom: 14px; }
-  .field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+
+  /* ─── FIELDS ─── */
+  .field { margin-bottom: 12px; }
+  .field label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+  }
   select, input {
     width: 100%;
     background: var(--surface2);
     border: 1px solid var(--border);
     color: var(--text);
     padding: 10px 14px;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
+    border-radius: 10px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
     appearance: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
   }
-  select:focus, input:focus { outline: none; border-color: var(--accent); }
-  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237a849a' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  select:hover, input:hover { border-color: var(--border-hover); }
+  select:focus, input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+    background: var(--surface3);
+  }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%238891a8' d='M5 6L0 0h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px; }
+  select:disabled, input:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* ─── BUTTONS ─── */
   .btn {
     width: 100%;
-    padding: 13px;
-    border-radius: 8px;
+    padding: 11px 18px;
+    border-radius: 10px;
     border: none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.5px;
+    transition: all 0.18s;
+    letter-spacing: 0.2px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   }
   .btn-primary {
     background: var(--accent);
-    color: #0d0f14;
-  }
-  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
-  .btn-primary:disabled { background: #444; color: #888; cursor: not-allowed; transform: none; }
-  .btn-ghost {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text);
-    width: auto;
-    padding: 8px 16px;
-    font-size: 0.82rem;
-  }
-  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-copy {
-    background: var(--green);
     color: #fff;
-    width: auto;
-    padding: 10px 20px;
+    box-shadow: 0 4px 20px var(--accent-glow);
   }
-  .btn-copy:hover { background: #27ae60; }
-  .features-box {
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(108,99,255,0.4); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { background: var(--surface3); color: var(--text-secondary); cursor: not-allowed; transform: none; box-shadow: none; border: 1px solid var(--border); }
+
+  .btn-ghost {
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    color: var(--text-secondary);
+    width: auto;
+    padding: 9px 16px;
+    font-size: 0.8rem;
+  }
+  .btn-ghost:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface3); }
+
+  .btn-success {
+    background: rgba(16,212,142,0.12);
+    border: 1px solid rgba(16,212,142,0.3);
+    color: var(--green);
+    width: auto;
+    padding: 10px 20px;
+    box-shadow: 0 0 20px var(--green-glow);
+  }
+  .btn-success:hover { background: rgba(16,212,142,0.2); border-color: var(--green); }
+
+  .btn-generate {
+    background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+    color: #fff;
+    box-shadow: 0 4px 24px var(--accent-glow);
+    font-size: 0.9rem;
+    padding: 13px;
+  }
+  .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(108,99,255,0.45); }
+
+  /* ─── VIN CARD ─── */
+  .vin-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
     padding: 14px;
-    margin-top: 4px;
-    max-height: 220px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .vin-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(108,99,255,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* ─── FEATURES ─── */
+  .features-box {
+    border-radius: 12px;
+    padding: 2px;
+    margin-top: 8px;
+    max-height: 230px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
   .feature-item {
     display: flex;
     align-items: center;
     padding: 8px 12px;
-    border-radius: 7px;
-    margin-bottom: 5px;
+    border-radius: 9px;
     cursor: pointer;
-    transition: all 0.18s ease;
-    background: rgba(232,160,32,0.12);
-    border: 1px solid rgba(232,160,32,0.35);
+    transition: all 0.15s ease;
+    background: rgba(108,99,255,0.08);
+    border: 1px solid rgba(108,99,255,0.2);
     user-select: none;
+    position: relative;
+  }
+  .feature-item::before {
+    content: '✓';
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    background: rgba(108,99,255,0.25);
+    color: var(--accent2);
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-right: 9px;
+    flex-shrink: 0;
   }
   .feature-item span {
-    font-size: 0.88rem;
-    color: var(--accent);
+    font-size: 0.84rem;
+    color: var(--text);
     font-weight: 500;
     line-height: 1.4;
   }
   .feature-item.inactive {
     background: rgba(255,255,255,0.02);
-    border-color: rgba(255,255,255,0.06);
-    opacity: 0.38;
+    border-color: var(--border);
+    opacity: 0.4;
   }
-  .feature-item.inactive span { color: var(--muted); }
-  .feature-item:hover { filter: brightness(1.2); }
+  .feature-item.inactive::before {
+    content: '';
+    background: var(--surface3);
+  }
+  .feature-item.inactive span { color: var(--text-secondary); }
+  .feature-item:hover { filter: brightness(1.15); }
+
+  /* ─── OUTPUT TEXTAREA ─── */
   .output-textarea {
     width: 100%;
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 12px;
     color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    line-height: 1.7;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.75;
     padding: 18px;
     resize: vertical;
-    min-height: 480px;
-    transition: border-color 0.2s;
+    min-height: 460px;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
-  .output-textarea:focus { outline: none; border-color: var(--accent); }
+  .output-textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .output-textarea::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+  /* ─── TEMPLATE GRID ─── */
   .template-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 6px;
     margin-bottom: 16px;
   }
   .template-btn {
     background: var(--surface2);
     border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 8px 10px;
-    border-radius: 8px;
-    font-size: 0.78rem;
+    color: var(--text-secondary);
+    padding: 9px 10px;
+    border-radius: 9px;
+    font-size: 0.75rem;
+    font-weight: 600;
     cursor: pointer;
     text-align: center;
-    transition: all 0.2s;
-    font-family: 'DM Sans', sans-serif;
+    transition: all 0.18s;
+    font-family: 'Manrope', sans-serif;
+    letter-spacing: 0.2px;
   }
-  .template-btn:hover, .template-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,160,32,0.08); }
+  .template-btn:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface3); }
+  .template-btn.active {
+    border-color: var(--accent);
+    color: var(--accent2);
+    background: rgba(108,99,255,0.1);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  /* ─── STATUS ─── */
   .status {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.8rem;
-    padding: 5px 10px;
+    gap: 7px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 6px 12px;
     border-radius: 20px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
-  .status.loading { background: rgba(232,160,32,0.15); color: var(--accent); }
-  .status.done { background: rgba(46,204,113,0.15); color: var(--green); }
-  .status.error { background: rgba(231,76,60,0.15); color: var(--red); }
-  .dot { width: 8px; height: 8px; border-radius: 50%; }
-  .dot.pulse { background: var(--accent); animation: pulse 1s infinite; }
+  .status.loading { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+  .status.done { background: rgba(16,212,142,0.1); color: var(--green); border: 1px solid rgba(16,212,142,0.25); }
+  .status.error { background: rgba(240,67,67,0.1); color: var(--red); border: 1px solid rgba(240,67,67,0.25); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .dot.pulse { background: var(--amber); animation: pulse 1s infinite; }
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
   .dot.green { background: var(--green); }
   .dot.red { background: var(--red); }
-  .action-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
-  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* ─── ACTION ROW ─── */
+  .action-row { display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+
+  /* ─── DIVIDER ─── */
+  .divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+  /* ─── INFO PILL ─── */
   .info-pill {
-    background: rgba(232,160,32,0.1);
-    border: 1px solid rgba(232,160,32,0.3);
-    color: var(--accent);
-    font-size: 0.75rem;
+    background: rgba(108,99,255,0.08);
+    border: 1px solid rgba(108,99,255,0.2);
+    color: var(--accent2);
+    font-size: 0.7rem;
+    font-weight: 600;
     padding: 4px 10px;
     border-radius: 20px;
     margin-bottom: 12px;
     display: inline-block;
+    letter-spacing: 0.3px;
   }
-  .custom-section { margin-top: 14px; }
+
+  /* ─── CUSTOM SECTION ─── */
+  .custom-section { margin-top: 12px; }
   .custom-section textarea {
     width: 100%;
     background: var(--surface2);
     border: 1px solid var(--border);
     color: var(--text);
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    line-height: 1.5;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.84rem;
+    line-height: 1.6;
     resize: vertical;
     min-height: 80px;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
-  .custom-section textarea:focus { outline: none; border-color: var(--accent); }
-  .char-hint { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .custom-section textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 
-  /* ========== MOBILE / VERTICAL LAYOUT ========== */
+  .char-hint { font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; }
+
+  /* ─── CUSTOM TEMPLATE EDITOR ─── */
+  #customTemplate {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 14px;
+    border-radius: 12px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.84rem;
+    line-height: 1.65;
+    resize: vertical;
+    min-height: 200px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #customTemplate:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
+
+  /* ─── MOBILE TAB BAR ─── */
+  .mob-tabs {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: rgba(15,17,23,0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    grid-template-columns: 1fr 1fr;
+  }
+  .mob-tab {
+    padding: 14px;
+    text-align: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: none;
+    width: 100%;
+  }
+  .mob-tab.active { color: var(--accent2); }
+
   @media (max-width: 768px) {
-    body { overflow-x: hidden; }
-
-    header {
-      padding: 12px 16px;
-      gap: 10px;
-    }
-    .logo { font-size: 1.5rem; }
+    header { padding: 0 16px; height: 54px; }
+    .logo { font-size: 1rem; }
     .tagline { display: none; }
+    .header-badge { display: none; }
 
-    .main {
-      display: block;
-      min-height: unset;
-    }
-
+    .main { display: block; min-height: unset; }
     .panel {
-      border-right: none;
-      border-bottom: 1px solid var(--border);
-      max-height: unset;
-      overflow-y: visible;
-      padding: 20px 16px;
+      display: none; border-right: none;
+      max-height: unset; overflow-y: unset;
+      padding: 16px 14px 100px;
     }
-
+    .panel.mob-active { display: block; }
     .output-panel {
-      max-height: unset;
-      overflow-y: visible;
-      padding: 20px 16px;
+      display: none; max-height: unset; overflow-y: unset;
+      padding: 16px 14px 100px;
     }
-
-    .output-textarea { min-height: 300px; }
-
-    .features-box { max-height: 200px; }
-
-    select, input {
-      font-size: 1rem;
-      padding: 12px 14px;
-    }
-    select { padding-right: 36px; }
-
-    .btn { padding: 14px; font-size: 1rem; }
-    .btn-ghost { font-size: 0.88rem; }
-  }
-
-  /* Extra-small screens (phones in portrait) */
-  @media (max-width: 480px) {
+    .output-panel.mob-active { display: block; }
+    .mob-tabs { display: grid; }
     .grid2 { grid-template-columns: 1fr; }
-    .template-grid { grid-template-columns: 1fr; }
-    .action-row { flex-direction: column; }
-    .action-row .btn { width: 100%; }
-    .btn-copy, .btn-ghost { width: 100%; }
+    .output-textarea { min-height: 340px; font-size: 0.85rem; }
+    .action-row { flex-wrap: wrap; }
+    .action-row .btn-generate { width: 100%; }
+    .features-box { max-height: 320px; }
+    select, input { font-size: 1rem; }
+    #customTemplate { min-height: 150px; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <div class="logo">List<span>It</span> Pro</div>
-    <div class="tagline">Marketplace Listing Generator for Dealers</div>
+  <div class="header-left">
+    <div class="logo-mark">LP</div>
+    <div>
+      <div class="logo">List<span>It</span> Pro</div>
+      <div class="tagline">Vehicle Listing Generator</div>
+    </div>
   </div>
+  <div class="header-badge">AI Powered</div>
 </header>
+
+<!-- MOBILE TAB BAR -->
+<div class="mob-tabs" id="mobTabs">
+  <button class="mob-tab active" id="tabInput" onclick="switchTab('input')">⚙️ Build</button>
+  <button class="mob-tab" id="tabOutput" onclick="switchTab('output')">📄 Listing</button>
+</div>
 
 <div class="main">
   <!-- LEFT PANEL -->
-  <div class="panel">
+  <div class="panel mob-active" id="inputPanel">
+
+    <!-- VIN DECODER -->
+    <div class="section-title"><span class="sticon">🔍</span> VIN Decoder</div>
+    <div class="vin-card">
+      <div class="field" style="margin-bottom:0">
+        <label>Paste VIN to Auto-Fill</label>
+        <div style="display:flex;gap:8px;margin-top:5px;">
+          <input type="text" id="vinInput" placeholder="e.g. 1HGCM82633A123456" maxlength="17" style="flex:1;text-transform:uppercase;letter-spacing:1.5px;font-size:0.82rem;">
+          <button class="btn btn-primary" style="width:auto;padding:10px 16px;font-size:0.82rem;" onclick="decodeVIN()">Decode</button>
+        </div>
+        <div id="vinStatus" style="margin-top:7px;font-size:0.75rem;min-height:16px;"></div>
+      </div>
+    </div>
 
     <!-- VEHICLE SELECTOR -->
-    <div class="section-title">🚗 Vehicle</div>
-    <div class="field">
-      <label>Year</label>
-      <select id="yearSelect"><option value="">Select Year</option></select>
-    </div>
-    <div class="field">
-      <label>Make</label>
-      <select id="makeSelect"><option value="">Select Make</option></select>
+    <div class="section-title"><span class="sticon">🚗</span> Vehicle</div>
+    <div class="grid2" style="margin-bottom:12px;">
+      <div class="field" style="margin-bottom:0">
+        <label>Year</label>
+        <select id="yearSelect"><option value="">Year</option></select>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Make</label>
+        <select id="makeSelect"><option value="">Make</option></select>
+      </div>
     </div>
     <div class="field">
       <label>Model</label>
@@ -325,56 +538,58 @@
     <div class="divider"></div>
 
     <!-- MANUAL FIELDS -->
-    <div class="section-title">📋 Details</div>
+    <div class="section-title"><span class="sticon">📋</span> Details</div>
     <div class="grid2">
       <div class="field">
         <label>Miles</label>
-        <input type="text" id="milesInput" placeholder="e.g. 68,450">
+        <input type="text" id="milesInput" placeholder="68,450">
       </div>
       <div class="field">
         <label>Color</label>
-        <input type="text" id="colorInput" placeholder="e.g. Midnight Blue">
+        <input type="text" id="colorInput" placeholder="Midnight Blue">
       </div>
     </div>
     <div class="field">
-      <label>Price ($)</label>
-      <input type="text" id="priceInput" placeholder="e.g. 18,995">
+      <label>Asking Price ($)</label>
+      <input type="text" id="priceInput" placeholder="18,995">
     </div>
 
     <div class="divider"></div>
 
     <!-- DEALER INFO -->
-    <div class="section-title">🏢 Dealer Info</div>
+    <div class="section-title"><span class="sticon">🏢</span> Dealer Info</div>
     <div class="field">
       <label>Dealer Name</label>
-      <input type="text" id="dealerName" placeholder="e.g. Metro Auto Sales">
+      <input type="text" id="dealerName" placeholder="Metro Auto Sales">
     </div>
     <div class="field">
       <label>Address</label>
-      <input type="text" id="dealerAddress" placeholder="e.g. 9999 Highway 888 NW, City, ST 99999">
+      <input type="text" id="dealerAddress" placeholder="9999 Highway 888 NW, City, ST 99999">
     </div>
-    <div class="field">
-      <label>Hours</label>
-      <input type="text" id="dealerHours" placeholder="e.g. Mon–Sat 10am–6pm">
-    </div>
-    <div class="field">
-      <label>Website</label>
-      <input type="text" id="dealerWebsite" placeholder="e.g. YourDealership.com">
+    <div class="grid2">
+      <div class="field">
+        <label>Hours</label>
+        <input type="text" id="dealerHours" placeholder="Mon–Sat 10am–6pm">
+      </div>
+      <div class="field">
+        <label>Website</label>
+        <input type="text" id="dealerWebsite" placeholder="YourSite.com">
+      </div>
     </div>
 
     <div class="divider"></div>
 
     <!-- FETCH FEATURES -->
-    <div class="section-title">✨ Key Features</div>
+    <div class="section-title"><span class="sticon">✨</span> Key Features</div>
     <button class="btn btn-primary" id="fetchBtn" disabled onclick="fetchFeatures()">
       🔍 Fetch Vehicle Features
     </button>
 
-    <div id="featuresContainer" style="display:none; margin-top:14px;">
+    <div id="featuresContainer" style="display:none; margin-top:12px;">
       <div id="statusMsg"></div>
       <div class="features-box" id="featuresList"></div>
       <div class="custom-section">
-        <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Add Custom Feature</label>
+        <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-secondary);letter-spacing:0.5px;margin-bottom:6px;">ADD CUSTOM FEATURE</label>
         <div style="display:flex;gap:8px;">
           <input type="text" id="customFeatureInput" placeholder="e.g. Tow Package 🚛" style="flex:1;">
           <button class="btn btn-ghost" onclick="addCustomFeature()">Add</button>
@@ -385,25 +600,25 @@
   </div>
 
   <!-- RIGHT PANEL -->
-  <div class="output-panel">
+  <div class="output-panel" id="outputPanel">
 
-    <div class="section-title">📝 Listing Template</div>
-    <div class="info-pill">Choose a style or customize below</div>
+    <div class="section-title"><span class="sticon">📝</span> Listing Template</div>
+    <div class="info-pill">Choose a style — or write your own below</div>
     <div class="template-grid" id="templateGrid"></div>
 
-    <div class="section-title">📄 Generated Listing</div>
-    <textarea class="output-textarea" id="outputText" placeholder="Select a vehicle, fill in details, fetch features, then click Generate..."></textarea>
+    <div class="section-title"><span class="sticon">📄</span> Generated Listing</div>
+    <textarea class="output-textarea" id="outputText" placeholder="Select a vehicle, fill in details, fetch features — then click Generate Listing…"></textarea>
 
     <div class="action-row">
-      <button class="btn btn-primary" style="flex:1;" onclick="generateListing()">⚡ Generate Listing</button>
-      <button class="btn btn-copy" onclick="copyListing()">📋 Copy</button>
-      <button class="btn btn-ghost" onclick="clearAll()">🗑 Clear</button>
+      <button class="btn btn-generate" style="flex:1;" onclick="generateListing()">⚡ Generate Listing</button>
+      <button class="btn btn-success" onclick="copyListing()">📋 Copy</button>
+      <button class="btn btn-ghost" onclick="clearAll()">🗑</button>
     </div>
 
     <div class="divider"></div>
-    <div class="section-title">🎨 Custom Template Editor</div>
-    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:10px;">Use placeholders: <code style="color:var(--accent);">{{year}} {{make}} {{model}} {{trim}} {{miles}} {{color}} {{price}} {{engine}} {{drivetrain}} {{transmission}} {{features}} {{address}} {{hours}} {{website}}</code></p>
-    <textarea class="custom-section" id="customTemplate" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:14px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;line-height:1.6;resize:vertical;min-height:200px;" placeholder="Write your own template here using the placeholders above..."></textarea>
+    <div class="section-title"><span class="sticon">🎨</span> Custom Template Editor</div>
+    <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:10px;line-height:1.6;">Use placeholders: <code style="color:var(--accent2);background:rgba(108,99,255,0.1);padding:1px 5px;border-radius:4px;font-size:0.73rem;">{{year}} {{make}} {{model}} {{trim}} {{miles}} {{color}} {{price}} {{engine}} {{drivetrain}} {{transmission}} {{features}} {{address}} {{hours}} {{website}}</code></p>
+    <textarea id="customTemplate" placeholder="Write your own template here using the placeholders above…"></textarea>
     <div class="action-row" style="margin-top:10px;">
       <button class="btn btn-ghost" onclick="saveCustomTemplate()">💾 Save as Preset 10</button>
       <button class="btn btn-ghost" onclick="useCustomTemplate()">✅ Use This Template</button>
@@ -494,6 +709,137 @@ let vehicleInfo = { engine: '', drivetrain: '', transmission: '' };
 // ============================================================
 // INIT
 // ============================================================
+// ============================================================
+// VIN DECODER — NHTSA Free API
+// ============================================================
+async function decodeVIN() {
+  const vin = document.getElementById('vinInput').value.trim().toUpperCase();
+  const statusEl = document.getElementById('vinStatus');
+
+  if (vin.length !== 17) {
+    statusEl.style.color = 'var(--red)';
+    statusEl.textContent = '⚠️ VIN must be exactly 17 characters.';
+    return;
+  }
+
+  statusEl.style.color = 'var(--amber)';
+  statusEl.textContent = '🔄 Looking up VIN...';
+
+  // Try NHTSA first, fall back to Claude AI
+  let year = '', make = '', model = '';
+  let source = '';
+
+  try {
+    const res = await fetch('https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/' + vin + '?format=json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const r = data.Results[0];
+    year  = r.ModelYear || '';
+    make  = r.Make ? r.Make.charAt(0).toUpperCase() + r.Make.slice(1).toLowerCase() : '';
+    model = r.Model || '';
+    source = 'NHTSA';
+  } catch(e) {
+    // NHTSA failed — fall back to Claude AI
+    statusEl.style.color = 'var(--amber)';
+    statusEl.textContent = '🤖 Using AI to decode VIN...';
+    try {
+      const resp = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 100,
+          messages: [{
+            role: "user",
+            content: `Decode this VIN and respond with ONLY this format, no other text:
+YEAR: [4-digit year]
+MAKE: [manufacturer name, title case]
+MODEL: [model name]
+
+VIN: ${vin}`
+          }]
+        })
+      });
+      const data = await resp.json();
+      const text = data.content?.[0]?.text || '';
+      const yearM = text.match(/YEAR:\s*(\d{4})/i);
+      const makeM = text.match(/MAKE:\s*(.+)/i);
+      const modelM = text.match(/MODEL:\s*(.+)/i);
+      year  = yearM  ? yearM[1].trim()  : '';
+      make  = makeM  ? makeM[1].trim()  : '';
+      model = modelM ? modelM[1].trim() : '';
+      source = 'AI';
+    } catch(e2) {
+      statusEl.style.color = 'var(--red)';
+      statusEl.textContent = '❌ Could not decode VIN. Please fill in vehicle details manually.';
+      return;
+    }
+  }
+
+  if (!year || !make || !model) {
+    statusEl.style.color = 'var(--red)';
+    statusEl.textContent = '❌ VIN not recognized. Please fill in vehicle details manually.';
+    return;
+  }
+
+  // Set Year
+  const yearSel = document.getElementById('yearSelect');
+  for (let opt of yearSel.options) {
+    if (opt.value === year) { yearSel.value = year; break; }
+  }
+
+  // Set Make — find closest match
+  const makeSel = document.getElementById('makeSelect');
+  const makeUpper = make.toUpperCase();
+  let matched = false;
+  for (let opt of makeSel.options) {
+    if (opt.value.toUpperCase() === makeUpper) {
+      makeSel.value = opt.value;
+      matched = true;
+      break;
+    }
+  }
+
+  // Populate models then set model
+  populateModels();
+
+  if (matched) {
+    const modelSel = document.getElementById('modelSelect');
+    const modelUpper = model.toUpperCase();
+    let modelMatched = false;
+    for (let opt of modelSel.options) {
+      if (opt.value.toUpperCase() === modelUpper) {
+        modelSel.value = opt.value;
+        modelMatched = true;
+        break;
+      }
+    }
+    if (!modelMatched) {
+      for (let opt of modelSel.options) {
+        if (opt.value.toUpperCase().includes(modelUpper) || modelUpper.includes(opt.value.toUpperCase())) {
+          modelSel.value = opt.value;
+          modelMatched = true;
+          break;
+        }
+      }
+    }
+    if (modelMatched) populateTrims();
+  }
+
+  updateFetchBtn();
+
+  statusEl.style.color = 'var(--green)';
+  const tag = source === 'AI' ? ' (via AI)' : '';
+  statusEl.textContent = `✅ ${year} ${make} ${model} — dropdowns filled!${tag}`;
+}
+
+// Allow pressing Enter in VIN field
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('vinInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') decodeVIN();
+  });
+});
+
 function init() {
   // Years
   const yearSel = document.getElementById('yearSelect');
@@ -752,7 +1098,7 @@ function copyListing() {
   const ta = document.getElementById('outputText');
   ta.select();
   document.execCommand('copy');
-  const btn = document.querySelector('.btn-copy');
+  const btn = document.querySelector('.btn-success');
   btn.textContent = '✅ Copied!';
   setTimeout(() => btn.textContent = '📋 Copy', 2000);
 }
@@ -777,6 +1123,36 @@ function useCustomTemplate() {
 }
 
 init();
+</script>
+
+<script>
+function switchTab(tab) {
+  const inputPanel = document.getElementById('inputPanel');
+  const outputPanel = document.getElementById('outputPanel');
+  const tabInput = document.getElementById('tabInput');
+  const tabOutput = document.getElementById('tabOutput');
+  if (tab === 'input') {
+    inputPanel.classList.add('mob-active');
+    outputPanel.classList.remove('mob-active');
+    tabInput.classList.add('active');
+    tabOutput.classList.remove('active');
+  } else {
+    outputPanel.classList.add('mob-active');
+    inputPanel.classList.remove('mob-active');
+    tabOutput.classList.add('active');
+    tabInput.classList.remove('active');
+    // scroll to top of output
+    outputPanel.scrollTop = 0;
+    window.scrollTo(0,0);
+  }
+}
+
+// Auto-switch to output tab after generating on mobile
+const _origGenerate = generateListing;
+generateListing = function() {
+  _origGenerate();
+  if (window.innerWidth <= 768) switchTab('output');
+};
 </script>
 </body>
 </html>
